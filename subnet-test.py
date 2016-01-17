@@ -13,7 +13,7 @@ import boto.ec2
 import sys
 
 # ** Modify these variables as needed **
-PROFILE = 'awseng'  # (from your ~/.boto)
+PROFILE = 'unicorn'  # (from your ~/.boto)
 REGIONS = ( 'us-east-1',  'eu-west-1',  'ap-northeast-1',
             'us-west-1', 'us-west-2', 'ap-southeast-1',
             'ap-southeast-2', 'sa-east-1', 'eu-central-1' )
@@ -39,11 +39,11 @@ def usage():
 usage()
 
 # Find args
-VERBOSE = 'False'
+#VERBOSE = 'False'
 args = len(sys.argv)
-if args > 1:
-    if '-v' in (str(sys.argv).lower()):
-        VERBOSE = 'True'
+#if args > 1:
+#    if '-v' in (str(sys.argv).lower()):
+#        VERBOSE = 'True'
 
 # Test each region (main loop)
 reg_total = len(REGIONS)
@@ -98,13 +98,10 @@ while reg_total > 0:
                 sub_list.append(sub.id)
                 sub_total += 1
                 az_no += 1
-            except Exception as e:
+            except boto.exception.EC2ResponseError as e:
                 print(" ..failed!")
-                if VERBOSE == 'True':
-                    print("\n--------------")
-                    print("Error Message:")
-                    print(e)
-                    print("--------------\n")
+                #if VERBOSE == 'True':
+                print(e.message,"\n")
                 az_no += 1
 
         # Clean up the mess
