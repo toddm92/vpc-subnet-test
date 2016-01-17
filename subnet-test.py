@@ -31,19 +31,10 @@ def usage():
 
   Testing VPC subnet creation in all availabe zones..
 
-   * Use "-v" (verbose mode) to print error messages (if any) to the screen
-
     """)
 
 # Print usage
 usage()
-
-# Find args
-#VERBOSE = 'False'
-args = len(sys.argv)
-#if args > 1:
-#    if '-v' in (str(sys.argv).lower()):
-#        VERBOSE = 'True'
 
 # Test each region (main loop)
 reg_total = len(REGIONS)
@@ -100,8 +91,7 @@ while reg_total > 0:
                 az_no += 1
             except boto.exception.EC2ResponseError as e:
                 print(" ..failed!")
-                #if VERBOSE == 'True':
-                print(e.message,"\n")
+                print(e.message, "\n")
                 az_no += 1
 
         # Clean up the mess
