@@ -11,7 +11,7 @@ This Python script tests creating a VPC subnet in each availability-zone for eve
 **Usage:**
 
 ```
-subnet-test.py [ -v ]
+subnet-test.py
 ```
 
 **Output:**
@@ -22,13 +22,13 @@ subnet-test.py [ -v ]
 
   Testing VPC subnet creation in all availabe zones..
 
-   * Use "-v" (verbose mode) to print error messages (if any) to the screen
-
     
 Test region us-east-1 [yes]? (enter 'q' to quit) 
 Region: us-east-1
 Attempting us-east-1a ..success!
 Attempting us-east-1b ..failed!
+Value (us-east-1b) for parameter availabilityZone is invalid. Subnets can currently only be created in the following availability zones: us-east-1c, us-east-1a, us-east-1d, us-east-1e. 
+
 Attempting us-east-1c ..success!
 Attempting us-east-1d ..success!
 Attempting us-east-1e ..success!
@@ -46,6 +46,8 @@ Cleaning up ..done!
 Test region ap-northeast-1 [yes]? (enter 'q' to quit) 
 Region: ap-northeast-1
 Attempting ap-northeast-1a ..failed!
+Value (ap-northeast-1a) for parameter availabilityZone is invalid. Subnets can currently only be created in the following availability zones: ap-northeast-1b, ap-northeast-1c. 
+
 Attempting ap-northeast-1b ..success!
 Attempting ap-northeast-1c ..success!
 
@@ -96,40 +98,8 @@ Attempting eu-central-1b ..success!
 Cleaning up ..done!
 ```
 
-Verbose mode:
-
-```
-./subnet-test.py -v
-
-
-  Testing VPC subnet creation in all availabe zones..
-
-   * Use "-v" (verbose mode) to print error messages (if any) to the screen
-
-    
-Test region us-east-1 [yes]? (enter 'q' to quit) 
-Region: us-east-1
-Attempting us-east-1a ..success!
-Attempting us-east-1b ..failed!
-
---------------
-Error Message:
-EC2ResponseError: 400 Bad Request
-<?xml version="1.0" encoding="UTF-8"?>
-<Response><Errors><Error><Code>InvalidParameterValue</Code><Message>Value (us-east-1b) for parameter availabilityZone is invalid. Subnets can currently only be created in the following availability zones: us-east-1c, us-east-1a, us-east-1d, us-east-1e.</Message></Error></Errors><RequestID>9f660247-23f1-4c94-ae4d-3956e81efe63</RequestID></Response>
---------------
-
-Attempting us-east-1c ..success!
-Attempting us-east-1d ..success!
-Attempting us-east-1e ..success!
-
-Cleaning up ..done!
-
-Test region eu-west-1 [yes]? (enter 'q' to quit) q
-```
-
 **To Do:**
 
-- [ ] Clean up verbose output
+- [x] Clean up verbose output
 - [ ] Create dynamic regions array
 - [ ] Make profile an argument
