@@ -13,7 +13,7 @@ import boto.ec2
 import sys
 
 # ** Modify these variables as needed **
-PROFILE = 'eng'  # (from your ~/.boto)
+PROFILE = 'awseng'  # (from your ~/.boto)
 REGIONS = ( 'us-east-1',  'eu-west-1',  'ap-northeast-1',
             'us-west-1', 'us-west-2', 'ap-southeast-1',
             'ap-southeast-2', 'sa-east-1', 'eu-central-1' )
@@ -62,8 +62,7 @@ while reg_total > 0:
         reg_total = 0
         
     elif rsp not in ( "y", "ye", "yes" ):
-        reg_no += 1
-        reg_total -= 1
+        reg_no += 1; reg_total -= 1
 
     else:
         # Do the work
@@ -72,7 +71,12 @@ while reg_total > 0:
         conn = boto.vpc.VPCConnection(profile_name=PROFILE, region=myregion)
 
         # Create a test VPC
-        test_vpc = conn.create_vpc(VPC_CIDR, instance_tenancy='default')
+        try:
+          test_vpc = conn.create_vpc(VPC_CIDR, instance_tenancy='default')
+        except boto.exception.EC2ResponseError as e:
+          print(e.message, "\n")
+          reg_no += 1; reg_total -= 1
+          continue
 
         # Get all available zones
         all_azs = conn.get_all_zones()
@@ -94,7 +98,7 @@ while reg_total > 0:
                 sub_list.append(sub.id)
                 sub_total += 1
                 az_no += 1
-            except Exception,e:
+            except Exception as e:
                 print(" ..failed!")
                 if VERBOSE == 'True':
                     print("\n--------------")
@@ -113,7 +117,6 @@ while reg_total > 0:
         conn.delete_vpc(test_vpc.id)
         print(" ..done!\n")
 
-        reg_no += 1
-        reg_total -= 1
+        reg_no += 1; reg_total -= 1
 #
 # (end main loop)
