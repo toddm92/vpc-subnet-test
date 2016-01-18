@@ -15,7 +15,7 @@ import sys
 
 # ** Modify as needed **
 #
-PROFILE = 'awseng'    # (from your ~/.boto)
+PROFILE = 'eng'    # (from your ~/.boto)
 # **
 
 # Dummy varibles
@@ -72,6 +72,7 @@ while reg_total > 0:
 
     else:
         # Do the work
+        #
         print("Region:", reg_name)
         myregion = boto.ec2.get_region(region_name=reg_name)
         conn = boto.vpc.VPCConnection(profile_name=PROFILE, region=myregion)
