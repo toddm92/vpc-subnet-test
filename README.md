@@ -101,5 +101,5 @@ Cleaning up ..done!
 **To Do:**
 
 - [x] Clean up verbose output
-- [ ] Create dynamic regions array
+- [x] Create dynamic regions array
 - [ ] Make profile an argument

@@ -4,6 +4,7 @@
 #
 # Test VPC subnet creation in all available zones 
 # Used for older AWS accounts with both ec2-classic and default-VPC options
+#
 
 # Must be the first line
 from __future__ import print_function
@@ -12,37 +13,51 @@ import boto.vpc
 import boto.ec2
 import sys
 
-# ** Modify these variables as needed **
-PROFILE = 'eng'  # (from your ~/.boto)
-REGIONS = ( 'us-east-1',  'eu-west-1',  'ap-northeast-1',
-            'us-west-1', 'us-west-2', 'ap-southeast-1',
-            'ap-southeast-2', 'sa-east-1', 'eu-central-1' )
+# ** Modify as needed **
+#
+PROFILE = 'awseng'    # (from your ~/.boto)
 # **
 
 # Dummy varibles
+#
 VPC_CIDR =  '10.10.0.0/16'
 SUBNETS = ( '10.10.0.0/24',  '10.10.1.0/24',  '10.10.2.0/24',
             '10.10.3.0/24',  '10.10.4.0/24',  '10.10.5.0/24' )
 
 def usage():
-    """Usage Statement"""
+  """ Usage Statement """
 
-    print("""
+  print("""
 
   Testing VPC subnet creation in all availabe zones..
 
-    """)
+  """)
+
+def get_regions():
+  """ Build a region list """
+
+  reg_list = []
+  for reg in boto.vpc.regions():
+    if reg.name == 'us-gov-west-1' or reg.name == 'cn-north-1':
+      continue
+    reg_list.append(reg.name)
+
+  return reg_list
 
 # Print usage
+#
 usage()
 
 # Test each region (main loop)
-reg_total = len(REGIONS)
+#
+regions = get_regions()
+reg_total = len(regions)
 reg_no = 0
 while reg_total > 0:
 
     # Ask to test each region
-    reg_name = REGIONS[reg_no]
+    #
+    reg_name = regions[reg_no]
     print("Test region", reg_name, "[yes]? (enter 'q' to quit) ", end = "")
     rsp = raw_input()
     rsp = rsp.lower()
@@ -62,6 +77,7 @@ while reg_total > 0:
         conn = boto.vpc.VPCConnection(profile_name=PROFILE, region=myregion)
 
         # Create a test VPC
+        #
         try:
           test_vpc = conn.create_vpc(VPC_CIDR, instance_tenancy='default')
         except boto.exception.EC2ResponseError as e:
@@ -70,6 +86,7 @@ while reg_total > 0:
           continue
 
         # Get all available zones
+        #
         all_azs = conn.get_all_zones()
         az_total = len(all_azs)
 
@@ -78,6 +95,7 @@ while reg_total > 0:
         az_no = 0
 
         # Test each AZ by attempting to create a subnet
+        #
         while az_no < az_total:
 
             az_name = str(all_azs[az_no])
@@ -95,6 +113,7 @@ while reg_total > 0:
                 az_no += 1
 
         # Clean up the mess
+        #
         print("\nCleaning up", end = "")
         while sub_total != 0:
 
